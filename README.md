@@ -13,12 +13,21 @@
 - **TypeScript data file**（即插即用，跟现有 panda-meme-workshop 框架兼容）
   - `src/data/face-pandahead.ts` — 65 张 face 数据，含 zh/en 标签
   - `src/data/panda-pandahead.ts` — 46 张 shell 数据，含 zh/en 标签 + `faceOffset` 已自动转到 350×350 panda body 坐标系
-- **Python 自动构建工具**（`scripts/normalize_face.py`）
-  - 加新 face：扔 raw PNG 到一个文件夹 → 一键 resize + center alignment + 输出 face-ph-NNN.png + TS 增量条目
-  - 注：本工具是为 panda-meme-workshop 框架简化版（不需要 alpha mask 直接 `<img>` overlay）；
-    PandaHead 主仓库用更复杂的 `build_assets.py` 同时生成 face/panda mask 给 canvas 三层合成。
-    本 `normalize_face.py` logic 提炼自 build_assets.py，已在 3 张 sample face 上 verify
-    输出 1024×1024 中心对齐 PNG。如有问题欢迎 issue。
+- **Python 自动构建工具 ×2**（`scripts/`）
+  - `normalize_face.py` — 加新 face：扔 raw PNG → 一键 resize + center alignment + 输出 face-ph-NNN.png + TS 增量条目
+    - 注：是 panda-meme-workshop 框架简化版（不需要 alpha mask 直接 `<img>` overlay），logic 提炼自 PandaHead 主仓 `build_assets.py`，已在 3 张 sample face verify 输出 1024×1024 中心对齐 PNG
+  - `align_panda.py` — **对 panda body PNG 自动检测白色 face 区，输出准确的 faceOffset**
+    - 解决问题：panda-meme-workshop 现有 24 个 panda 的 faceOffset 是手工配置 5-6 个 preset 复用，部分姿势（敬礼/侧身/疑问 etc.）face 落点偏离 panda 头脸
+    - 用法：`python align_panda.py --input public/assets/ --output align-suggestions.json`
+    - 算法：`scipy.ndimage.label` 找最大白色联通区 → 该区 bbox 转到 350×350 panda body 坐标系
+    - 依赖：`pip install pillow numpy scipy`
+    - **慎用**：v2 算法对部分 panda 仍有 edge case bug（如 panda-01/02/stand 给出 w=1 的极细线），跑出来 review 后再 apply，不要无脑覆盖现有 faceOffset
+
+## 配套的 PR
+
+Quick Mode（简易生图独立 page）+ Collection（草图管理）板块的代码贡献已提交：
+
+→ **[panda-meme-workshop fork PR](https://github.com/jokkibtc/panda-meme-workshop/pull/1)**（jokkibtc fork 内 PR，含完整 diff 让 LittleRed cherry-pick）
 
 ## 集成方式（panda-meme-workshop 框架）
 
