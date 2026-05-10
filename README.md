@@ -50,7 +50,44 @@ PANDA_HEADS.forEach(p => {
 - `src/data/panda-pandahead.ts` — 46 张 shell 数据，同上 + 精准 faceOffset
 - `src/data/panda-align-overrides.ts` — **47 个**已存在 panda 的 faceOffset 修正建议（auto-gen by align_panda.py v3）
 
-### Python 工具 ×2（`scripts/`）
+### face area masks (93 张) — **完美适配 face 到 panda 的核心**
+
+`public/assets/panda-NN-facemask.png`（24 their + 46 our + 23 alias = 93 张）
+
+每个 panda body 配一个对应的 alpha mask（白脸区轮廓内 alpha=255，外 alpha=0，Gaussian blur 边缘平滑）。
+
+**为啥需要**：panda-meme-workshop 用 `<img>` overlay 堆 face 到 panda 上，face PNG 自带的白色 padding 会 cover panda 黑廓 / face 矩形超出 panda 白脸区域 → 视觉错位（user 反馈最严重的问题）。
+
+**用法**（CSS mask-image，零改渲染管线）：
+
+```jsx
+<img
+  src={face.src}
+  style={{
+    left: panda.faceOffset.x,
+    top: panda.faceOffset.y,
+    width: panda.faceOffset.w,
+    height: panda.faceOffset.h,
+    // 关键：mask 限 face 在 panda 白脸区轮廓内显示
+    maskImage: `url(${panda.src.replace('.png', '-facemask.png')})`,
+    WebkitMaskImage: `url(${panda.src.replace('.png', '-facemask.png')})`,
+    maskSize: '100% 100%',
+    WebkitMaskSize: '100% 100%',
+    maskRepeat: 'no-repeat',
+    WebkitMaskRepeat: 'no-repeat',
+  }}
+/>
+```
+
+**效果**：
+- ✅ face 白边自动切掉不遮 panda 黑廓
+- ✅ face 不超 panda 头脸区域
+- ✅ panda 黑廓装饰（举手/持刀/墨镜 etc）不被 face 遮
+- ✅ 复刻 PandaHead canvas 三层 mask 视觉，零改 panda-meme-workshop `<img>` overlay 渲染
+
+详见 PR: [panda-meme-workshop pull/1 commit 681fa6b](https://github.com/jokkibtc/panda-meme-workshop/pull/1/commits/681fa6b)
+
+### Python 工具 ×3（`scripts/`）
 
 #### 1. `normalize_face.py` — 标准化 face PNG
 
@@ -93,6 +130,25 @@ python scripts/align_panda.py --input <your-repo>/public/assets/ --output align-
 - 算出的 bbox 是"建议值"，少数姿势可能仍需 visual review 微调（如颠勺款 face 区在锅里就一小块、敬礼款 face 偏下方）
 - panda-04 / panda-06 / panda-10 / panda-salute 等 panda 头里完全没"白色像素"的，算法返回 None → 保留原 manual offset
 - **不要无脑覆盖现有 faceOffset 对所有 panda**，建议 import `PANDA_ALIGN_OVERRIDES` 选择性应用
+
+#### 3. `gen_face_masks.py` — 生成 face area alpha mask PNG
+
+**完美适配 face → panda 的关键工具**。给每个 panda body 生成对应的 face mask，让 CSS mask-image 限制 face 只在 panda 白脸区轮廓内显示。
+
+```bash
+pip install pillow numpy scipy
+python scripts/gen_face_masks.py --input <your-repo>/public/assets/
+# 输出 panda-NN-facemask.png 到同一目录（93 张：24 their + 46 our + 23 alias）
+```
+
+**Logic**：
+1. 检测 panda 内白色 face 区联通块（同 align_panda v3 算法 + dilation 5px）
+2. 裁剪该联通区到 bbox
+3. 输出 alpha mask PNG（mask 内 alpha=255，外 alpha=0，Gaussian blur sigma=1.5 平滑边缘）
+
+**用法见上面"face area masks"章节**。
+
+**注意**：本 repo 已附 93 张 facemask PNG，**直接复制 `public/assets/*-facemask.png` 即可**，不需要自己跑脚本（除非你加新 panda）。
 
 ## 配套 PR
 
