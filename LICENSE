@@ -1,0 +1,35 @@
+MIT License
+
+Copyright (c) 2026 PandaHead Contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+Notes on bundled assets:
+
+- Face PNGs (`web/faces/*.png`, `images/comparison/face/*.png`) are sourced
+  from publicly circulated 熊猫头 (panda head) memes. Original faces are
+  attributed to the source individuals (e.g. 金馆长 / 崔成国 et al.) and are
+  presented under research / educational fair use, not for commercial purpose.
+- Shell PNGs (`web/shells/*.png`) are derived from public meme circulation
+  in Chinese-speaking internet (Baidu Tieba, Weibo, etc.) and are similarly
+  presented under fair use.
+- Bundled fonts are loaded via Google Fonts CDN under their respective Open
+  Font licenses (OFL / Apache 2.0).
