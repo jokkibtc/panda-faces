@@ -104,8 +104,9 @@ def main():
     snippet = "\n".join(ts_lines)
     snippet_path = out_dir.parent / "face-pandahead-new.ts.txt"
     snippet_path.write_text(snippet, encoding="utf-8")
-    print(f"\n✓ {len(new_entries)} faces normalized")
-    print(f"✓ TS snippet: {snippet_path} (手工 merge 进 src/data/face-pandahead.ts)")
+    # 用 ASCII 替代 Unicode 钩号，Windows GBK console 不会崩
+    print(f"\n[ok] {len(new_entries)} faces normalized -> {out_dir}")
+    print(f"[ok] TS snippet: {snippet_path} (manually merge into src/data/face-pandahead.ts)")
 
 
 if __name__ == "__main__":
