@@ -15,6 +15,10 @@
   - `src/data/panda-pandahead.ts` — 46 张 shell 数据，含 zh/en 标签 + `faceOffset` 已自动转到 350×350 panda body 坐标系
 - **Python 自动构建工具**（`scripts/normalize_face.py`）
   - 加新 face：扔 raw PNG 到一个文件夹 → 一键 resize + center alignment + 输出 face-ph-NNN.png + TS 增量条目
+  - 注：本工具是为 panda-meme-workshop 框架简化版（不需要 alpha mask 直接 `<img>` overlay）；
+    PandaHead 主仓库用更复杂的 `build_assets.py` 同时生成 face/panda mask 给 canvas 三层合成。
+    本 `normalize_face.py` logic 提炼自 build_assets.py，已在 3 张 sample face 上 verify
+    输出 1024×1024 中心对齐 PNG。如有问题欢迎 issue。
 
 ## 集成方式（panda-meme-workshop 框架）
 
