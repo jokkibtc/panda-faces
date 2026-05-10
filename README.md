@@ -87,7 +87,7 @@ PANDA_HEADS.forEach(p => {
 
 详见 PR: [panda-meme-workshop pull/1 commit 681fa6b](https://github.com/jokkibtc/panda-meme-workshop/pull/1/commits/681fa6b)
 
-### Python 工具 ×3（`scripts/`）
+### Python 工具 ×4（`scripts/`）
 
 #### 1. `normalize_face.py` — 标准化 face PNG
 
@@ -149,6 +149,29 @@ python scripts/gen_face_masks.py --input <your-repo>/public/assets/
 **用法见上面"face area masks"章节**。
 
 **注意**：本 repo 已附 93 张 facemask PNG，**直接复制 `public/assets/*-facemask.png` 即可**，不需要自己跑脚本（除非你加新 panda）。
+
+**Caveat 2026-05-11**：CSS `mask-image` 在 chromium 系浏览器对 RGBA PNG 默认 luminance mode 不是 alpha mode → 我们 mask alpha mask 几乎被忽略 + Gaussian blur 让 sharp alpha 变 gradient 几乎全低值 → 实际 mask 不工作。**目前推荐的方案是使用下面 #4 face PNG 透明化**，跳过 CSS mask。这些 mask PNG 仅供未来 canvas 合成方案使用。
+
+#### 4. `make_face_transparent.py` ⭐ — face PNG 透明化（**当前推荐方案**）
+
+**根 fix face → panda overlay 视觉错位**。把 face PNG 的白色 padding alpha=0，face 内容（含牙齿/高光白色）保留。
+
+```bash
+pip install pillow numpy scipy
+python scripts/make_face_transparent.py --input <your-repo>/public/assets/ --pattern 'face-ph-*.png'
+# 覆盖原 PNG，face 内容不变，padding 透明化
+```
+
+**Logic（flood fill from boundary）**：
+1. mask_white = pixel 是 pure white (R>250 G>250 B>250)
+2. seed = mask_white 在图像 4 边界
+3. flooded = `binary_propagation(seed, mask=mask_white)` → 从边界 reachable 的白色 = padding
+4. 不 reachable 的白色（face 内被内容包围孤立）→ 保留
+5. set alpha[flooded] = 0
+
+**关键洞察**：face 内白色（牙齿/高光）不连通到边界 PNG 边缘，flood fill 不会去掉它们 ✓
+
+**用法（panda-meme-workshop 集成）**：face PNG 透明化后，`<img>` overlay 直接用即可，不需要 mask / canvas。本 repo 已附 60/65 透明化的 face PNG，**直接复制 `public/assets/face-ph-*.png` 即可**。
 
 ## 配套 PR
 
