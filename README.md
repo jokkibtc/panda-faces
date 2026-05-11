@@ -75,11 +75,6 @@ python scripts/make_face_transparent.py --input ./public/assets
 python scripts/gen_face_masks.py --input ./public/assets
 ```
 
-## 谁在用
-
-- [pandahead.fun](https://pandahead.fun) — 主站
-- [xiongmaotou.work](https://xiongmaotou.work) ([github.com/nixijue-arch/panda-meme-workshop](https://github.com/nixijue-arch/panda-meme-workshop)) — 社区项目，已合并素材 + 渲染引擎
-
 欢迎 fork / PR。
 
 ## License
