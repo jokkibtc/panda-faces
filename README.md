@@ -1,8 +1,6 @@
 # panda-faces
 
-熊猫头表情包素材库 + canvas 渲染引擎 + Python 工具，给社区项目（[xiongmaotou.work](https://xiongmaotou.work) 等）开箱即用。
-
-来自 [PandaHead](https://pandahead.fun) ([github.com/jokkibtc/panda](https://github.com/jokkibtc/panda))。
+熊猫头表情包素材库 + canvas 渲染引擎 + Python 工具，给社区项目（[xiongmaotou.work](https://xiongmaotou.work) ）开箱即用。
 
 ## 包含什么
 
